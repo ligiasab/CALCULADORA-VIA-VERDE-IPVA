@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Calculadora do Benefício Fiscal – Via Verde</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 900px;
+      margin: 32px auto 48px;
+      background: #fff;
+      padding: 30px 24px;
+      border-radius: 16px;
+      box-shadow: 0 0 18px rgba(0,90,20,0.15);
+    }
+    .topo-via-verde {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: #dfffe0;
+      padding: 18px 20px;
+      border-radius: 8px;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+    }
+    .topo-via-verde img {
+      height: 50px;
+      flex-shrink: 0;
+    }
+    .titulos {
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+      min-width: 250px;
+    }
+    .titulo {
+      font-size: 1.8em;
+      color: #006400;
+      font-weight: bold;
+      margin: 0;
+      line-height: 1.2;
+    }
+    .subtitulo {
+      font-size: 1.05em;
+      color: #228B22;
+      margin-top: 4px;
+    }
+    label {
+      font-weight: bold;
+      color: #006400;
+      margin-top: 22px;
+      display: block;
+      margin-bottom: 6px;
+    }
+    select, input[type=number] {
+      width: 100%;
+      font-size: 1em;
+      padding: 8px 10px;
+      border-radius: 6px;
+      border: 1.7px solid #228B22;
+      background: #f7fefc;
+      box-sizing: border-box;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      cursor: pointer;
+    }
+    input[type=number] {
+      cursor: text;
+    }
+    button {
+      margin-top: 30px;
+      width: 100%;
+      padding: 16px 0;
+      font-weight: bold;
+      font-size: 1.2em;
+      background: linear-gradient(90deg,#228b22 0%,#006400 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 3px 12px #c3efc3;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: linear-gradient(90deg,#006400 0%,#228b22 100%);
+    }
+    table {
+      margin-top: 32px;
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 1em;
+      color: #004d00;
+    }
+    th, td {
+      border: 1px solid #8ad48a;
+      padding: 10px 12px;
+      text-align: center;
+    }
+    th {
+      background-color: #dfffe0;
+      font-weight: 700;
+    }
+    .note-link {
+      color: #006400;
+      font-weight: 600;
+      font-size: 0.9em;
+      margin-top: 8px;
+      display: block;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+    .economia {
+      font-weight: 700;
+      color: #006400;
+      font-size: 1.2em;
+      margin-top: 24px;
+      padding: 16px;
+      background: #dfffe0;
+      border-radius: 8px;
+      text-align: center;
+      box-shadow: 0 0 10px #bbddbb;
+    }
+    .section-title {
+      margin-top: 30px;
+      padding-bottom: 6px;
+      border-bottom: 2px solid #228B22;
+      font-weight: 700;
+      color: #228B22;
+      font-size: 1.2em;
+    }
+    @media (max-width: 620px) {
+      .topo-via-verde {
+        justify-content: center;
+      }
+      .titulos {
+        align-items: center;
+        text-align: center;
+      }
+      button {
+        font-size: 1.1em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="topo-via-verde">
+      <img src="via_verde_logo.png" alt="Logo Via Verde" />
+      <div class="titulos">
+        <div class="titulo">CALCULADORA DO BENEFÍCIO FISCAL</div>
+        <div class="subtitulo">Simule sua economia com esse benefício fiscal do IPVA e contribua para a mobilidade sustentável</div>
+      </div>
+    </div>
+
+    <label for="fabricante">Fabricante do veículo</label>
+    <select id="fabricante" onchange="atualizaModelos()" required>
+      <option value="" selected disabled>Selecione o fabricante</option>
+      <option>BYD</option>
+      <option>CAOA CHERY</option>
+      <option>FIAT</option>
+      <option>FORD</option>
+      <option>GWM</option>
+      <option>HONDA</option>
+      <option>HYUNDAI</option>
+      <option>JAECOO</option>
+      <option>JEEP</option>
+      <option>NISSAN</option>
+      <option>PEUGEOT</option>
+      <option>RENAULT</option>
+      <option>TOYOTA</option>
+      <option>VOLKSWAGEN</option>
+      <option>VOLVO</option>
+      <option>BMW</option>
+      <option>OUTRO</option>
+    </select>
+
+    <label for="modelo">Modelo do veículo</label>
+    <select id="modelo" onchange="verificaPreco()" required>
+      <option value="" selected disabled>Selecione o modelo</option>
+    </select>
+
+    <label for="tecnologia">Tecnologia</label>
+    <select id="tecnologia" required>
+      <option value="" selected disabled>Selecione a tecnologia</option>
+      <option>BEV</option>
+      <option>HEV</option>
+      <option>HEV FLEX</option>
+      <option>Combustão Etanol</option>
+      <option>Combustão Flex</option>
+      <option>Combustão Gasolina</option>
+      <option>Gás Natural</option>
+      <option>MHEV</option>
+      <option>PHEV</option>
+      <option>PHEV Flex</option>
+    </select>
+
+    <label for="precoVeiculo">Preço do veículo (R$)</label>
+    <input type="number" id="precoVeiculo" step="0.01" placeholder="Informe o preço se não estiver listado" />
+    <a href="https://veiculos.fipe.org.br/" target="_blank" class="note-link">Consultar tabela FIPE - valores de junho/2025</a>
+
+    <label for="estado">Estado</label>
+    <select id="estado" required>
+      <option value="" selected disabled>Selecione o estado</option>
+      <option>SP</option>
+      <option>PB</option>
+      <option>RS</option>
+      <option>RO</option>
+    </select>
+
+    <button onclick="calcular()">Calcular</button>
+    <div id="resultado"></div>
+  </div>
+
+<script>
+  const dadosVeiculos = [
+    { modelo:'DOLPHIN MINI G5SEV', fabricante:'BYD', tecnologia:'BEV', preco:120321.00 },
+    { modelo:'SONG PRO GS DM', fabricante:'BYD', tecnologia:'PHEV', preco:189782.00 },
+    { modelo:'FASTBACK AUDACE HYB', fabricante:'FIAT', tecnologia:'MHEV', preco:149160.00 },
+    { modelo:'PULSE AUDACE HYB', fabricante:'FIAT', tecnologia:'MHEV', preco:135482.00 },
+    { modelo:'KING GS DM', fabricante:'BYD', tecnologia:'BEV', preco:168393.00 },
+    { modelo:'SONG PLUS GS DM', fabricante:'BYD', tecnologia:'PHEV', preco:225021.00 },
+    { modelo:'HAVAL H6 PHEV 19', fabricante:'GWM', tecnologia:'PHEV', preco:244799.00 },
+    { modelo:'DOLPHIN GS 180EV', fabricante:'BYD', tecnologia:'BEV', preco:148585.00 },
+    { modelo:'CCROSS XRX HYBRID', fabricante:'TOYOTA', tecnologia:'HEV FLEX', preco:212039.00 },
+    { modelo:'FASTBACK IMPETUS HY', fabricante:'FIAT', tecnologia:'MHEV', preco:159903.00 },
+    { modelo:'HAVAL H6 PREM HEV', fabricante:'GWM', tecnologia:'HEV', preco:220000.00 },
+    { modelo:'COROLLA APREMIMUMH', fabricante:'TOYOTA', tecnologia:'HEV FLEX', preco:195199.00 },
+    { modelo:'HAVAL H6 PREM PHEV', fabricante:'GWM', tecnologia:'PHEV', preco:287588.00 },
+    { modelo:'DOLPHIN PLUS 310EV', fabricante:'BYD', tecnologia:'BEV', preco:172760.00 },
+    { modelo:'PULSE IMPETUS HYB', fabricante:'FIAT', tecnologia:'MHEV', preco:147648.00 },
+    { modelo:'HAVAL H6 GT', fabricante:'GWM', tecnologia:'PHEV', preco:324670.00 },
+    { modelo:'YUAN PRO GS 290EV', fabricante:'BYD', tecnologia:'BEV', preco:167890.00 },
+    { modelo:'DOLPHIN MINI GS EV', fabricante:'BYD', tecnologia:'BEV', preco:120321.00 },
+    { modelo:'SEAL AWD GS 590EV', fabricante:'BYD', tecnologia:'BEV', preco:255900.00 },
+    { modelo:'RAV4H SXAWD CNT', fabricante:'TOYOTA', tecnologia:'HEV', preco:347337.00 },
+    { modelo:'EX30 E60 ULTRA', fabricante:'VOLVO', tecnologia:'BEV', preco:247743.00 },
+    { modelo:'TANK 300 PHEV', fabricante:'GWM', tecnologia:'PHEV', preco:336968.00 },
+    { modelo:'ARRIZO6 PRHA', fabricante:'CAOA CHERY', tecnologia:'MHEV', preco:140368.00 },
+    { modelo:'CIVIC HYB TRNG', fabricante:'HONDA', tecnologia:'HEV', preco:258872.00 },
+    { modelo:'TIGGO7 PRO HA', fabricante:'CAOA CHERY', tecnologia:'MHEV', preco:221326.00 },
+    { modelo:'ORA 03 GT BEV63', fabricante:'GWM', tecnologia:'BEV', preco:199000.00 },
+    { modelo:'E-KWID INTENS', fabricante:'RENAULT', tecnologia:'BEV', preco:98167.00 },
+    { modelo:'SHARK GS DM', fabricante:'BYD', tecnologia:'PHEV', preco:342990.00 },
+    { modelo:'ORA 03 SKIN BEV48', fabricante:'GWM', tecnologia:'BEV', preco:169176.00 },
+    { modelo:'EX30 E60 PLUS', fabricante:'VOLVO', tecnologia:'BEV', preco:253809.00 },
+    { modelo:'SONG PLUS PREM DM', fabricante:'BYD', tecnologia:'PHEV', preco:296495.00 },
+    { modelo:'YUAN PLUS GL 310EV', fabricante:'BYD', tecnologia:'BEV', preco:224810.00 },
+    { modelo:'7 PRESTIGE', fabricante:'JAECOO', tecnologia:'PHEV', preco:251660.00 },
+    { modelo:'X5 XDRIVE50E MSP', fabricante:'BMW', tecnologia:'PHEV', preco:785550.00 }
+  ];
+
+  const precoField = document.getElementById('precoVeiculo');
+  precoField.disabled = true;
+
+  function atualizaModelos() {
+    const fabricante = document.getElementById('fabricante').value;
+    const modeloSelect = document.getElementById('modelo');
+    modeloSelect.innerHTML = '<option value="" selected disabled>Selecione o modelo</option>';
+    if (fabricante === "OUTRO" || !fabricante) {
+      const optionOutro = document.createElement('option');
+      optionOutro.value = 'Outro';
+      optionOutro.textContent = 'Outro';
+      modeloSelect.appendChild(optionOutro);
+      precoField.value = '';
+      precoField.disabled = false;
+      document.getElementById('tecnologia').value='';
+      document.getElementById('tecnologia').disabled = false;
+      return;
+    }
+    let modelos = dadosVeiculos.filter(v => v.fabricante === fabricante).map(v => v.modelo);
+    modelos = [...new Set(modelos)].sort();
+    modelos.forEach(m => {
+      const option = document.createElement('option');
+      option.value = m;
+      option.textContent = m;
+      modeloSelect.appendChild(option);
+    });
+    const optionOutro = document.createElement('option');
+    optionOutro.value = 'Outro';
+    optionOutro.textContent = 'Outro';
+    modeloSelect.appendChild(optionOutro);
+
+    precoField.value = '';
+    precoField.disabled = true;
+    document.getElementById('tecnologia').value='';
+    document.getElementById('tecnologia').disabled = true;
+  }
+
+  function verificaPreco() {
+    const modelo = document.getElementById('modelo').value;
+    if (modelo === 'Outro' || modelo === '') {
+      precoField.value = '';
+      precoField.disabled = false;
+      document.getElementById('tecnologia').value='';
+      document.getElementById('tecnologia').disabled = false;
+      return;
+    }
+    const veiculo = dadosVeiculos.find(v => v.modelo === modelo);
+    if (veiculo) {
+      precoField.value = veiculo.preco.toFixed(2);
+      precoField.disabled = true;
+      document.getElementById('tecnologia').value = veiculo.tecnologia;
+      document.getElementById('tecnologia').disabled = true;
+    } else {
+      precoField.value = '';
+      precoField.disabled = false;
+      document.getElementById('tecnologia').value='';
+      document.getElementById('tecnologia').disabled = false;
+    }
+  }
+
+  function truncar(valor) {
+    return Math.floor(valor * 100) / 100;
+  }
+
+  function calcular() {
+    const fabricante = document.getElementById('fabricante').value;
+    const modelo = document.getElementById('modelo').value;
+    const tecnologia = document.getElementById('tecnologia').value;
+    let preco = parseFloat(document.getElementById('precoVeiculo').value);
+    const estado = document.getElementById('estado').value;
+
+    if (!fabricante || !modelo || !tecnologia || !estado || isNaN(preco)) {
+      alert('Preencha todos os campos corretamente.');
+      return;
+    }
+
+    if (modelo !== 'Outro') {
+      const veiculo = dadosVeiculos.find(v => v.modelo === modelo);
+      if (veiculo) preco = veiculo.preco;
+    }
+
+    function ipvaBase(precoBase) {
+      switch(estado) {
+        case 'SP': return truncar(precoBase * 0.04);
+        case 'PB': return truncar(precoBase * 0.025);
+        case 'RS': return truncar(precoBase * 0.03);
+        case 'RO': return truncar(precoBase * 0.03);
+        default: return 0;
+      }
+    }
+
+    const anos = [2026, 2027, 2028, 2029, 2030];
+    const preco2026 = preco;
+    const preco2027 = truncar(preco2026 * 0.8);
+    const preco2028 = truncar(preco2027 * 0.85);
+    const preco2029 = truncar(preco2028 * 0.92);
+    const preco2030 = truncar(preco2029 * 0.92);
+    const precosAnuais = [preco2026, preco2027, preco2028, preco2029, preco2030];
+
+    let tabelaHTML = '';
+    let somaEconomia = 0;
+
+    // HEV para todos estados: calcula como combustão, sem exceção
+    if (tecnologia === 'HEV') {
+      tabelaHTML += '<table><tr><th>Ano</th><th>IPVA devido no estado (R$)</th></tr>';
+      let somaIpva = 0;
+      for (let i = 0; i < anos.length; i++) {
+        const ipva = ipvaBase(precosAnuais[i]);
+        somaIpva += ipva;
+        tabelaHTML += `<tr><td>${anos[i]}</td><td>${ipva.toFixed(2)}</td></tr>`;
+      }
+      tabelaHTML += `</table><div class="economia">IPVA total devido (2026-2030): R$ ${somaIpva.toFixed(2)}</div>`;
+    }
+    // Regras ESPECIAIS para HEV FLEX em SP (apenas!)
+    else if (tecnologia === 'HEV FLEX' && estado === 'SP') {
+      if (preco <= 250000) {
+        tabelaHTML = '<table><tr><th>Ano</th><th>IPVA devido com benefício atual no estado (R$)</th><th>IPVA devido com benefício fiscal VIA VERDE (R$)</th><th>Economia de IPVA (R$)</th></tr>';
+        let somaEco = 0;
+        for (let i = 0; i < anos.length; i++) {
+          let ipvaAtual = 0;
+          if (i === 0) ipvaAtual = 0;
+          if (i === 1) ipvaAtual = truncar(precosAnuais[i] * 0.01);
+          if (i === 2) ipvaAtual = truncar(precosAnuais[i] * 0.02);
+          if (i === 3) ipvaAtual = truncar(precosAnuais[i] * 0.03);
+          if (i === 4) ipvaAtual = truncar(precosAnuais[i] * 0.04);
+          const ipvaViaVerde = truncar(precosAnuais[i] * 0.01);
+          const economia = truncar(ipvaAtual - ipvaViaVerde);
+          somaEco += economia;
+          tabelaHTML += `<tr><td>${anos[i]}</td><td>${ipvaAtual.toFixed(2)}</td><td>${ipvaViaVerde.toFixed(2)}</td><td>${economia.toFixed(2)}</td></tr>`;
+        }
+        tabelaHTML += `</table><div class="economia">Seu estado já possui um benefício de IPVA para Híbridos Flex porém apenas até 2029.<br> Economia de IPVA no período: R$ ${somaEco.toFixed(2)}</div>`;
+      } else if (preco > 250000 && preco <= 300000) {
+        tabelaHTML = '<table><tr><th>Ano</th><th>IPVA devido no estado (R$)</th><th>IPVA devido com benefício fiscal VIA VERDE (R$)</th><th>Economia de IPVA (R$)</th></tr>';
+        let somaEco = 0;
+        for (let i = 0; i < anos.length; i++) {
+          const ipvaNormal = truncar(precosAnuais[i] * 0.04);
+          const ipvaViaVerde = truncar(precosAnuais[i] * 0.01);
+          const economia = truncar(ipvaNormal - ipvaViaVerde);
+          somaEco += economia;
+          tabelaHTML += `<tr><td>${anos[i]}</td><td>${ipvaNormal.toFixed(2)}</td><td>${ipvaViaVerde.toFixed(2)}</td><td>${economia.toFixed(2)}</td></tr>`;
+        }
+        tabelaHTML += `</table><div class="economia">Seu estado possui um benefício de IPVA para Híbridos Flex porém apenas com veículos até R$ 250.000,00.<br> Economia de IPVA no período: R$ ${somaEco.toFixed(2)}</div>`;
+      } else {
+        tabelaHTML = '<table><tr><th>Ano</th><th>IPVA devido no estado (R$)</th></tr>';
+        let somaIpva = 0;
+        for (let i = 0; i < anos.length; i++) {
+          const ipvaNormal = truncar(precosAnuais[i] * 0.04);
+          somaIpva += ipvaNormal;
+          tabelaHTML += `<tr><td>${anos[i]}</td><td>${ipvaNormal.toFixed(2)}</td></tr>`;
+        }
+        tabelaHTML += `</table><div class="economia">Benefício fiscal apenas para veículos com valor menor ou igual a R$ 300.000,00.<br>IPVA devido nos 5 anos: R$ ${somaIpva.toFixed(2)}</div>`;
+      }
+    }
+    // Demais regras de HEV FLEX, PHEV FLEX, PHEV (exceto HEV FLEX em SP)
+    else if (["HEV FLEX", "PHEV Flex", "PHEV FLEX"].includes(tecnologia)) {
+      let habilitaBeneficioViaVerde = preco <= 300000;
+      tabelaHTML = '<table><tr><th>Ano</th><th>IPVA devido sem benefício (R$)</th>';
+      if (habilitaBeneficioViaVerde) tabelaHTML += '<th>IPVA devido com benefício (R$)</th><th>Economia de IPVA (R$)</th>';
+      tabelaHTML += '</tr>';
+      let somaEco = 0;
+      for (let i = 0; i < anos.length; i++) {
+        const ipvaSem = ipvaBase(precosAnuais[i]);
+        if (habilitaBeneficioViaVerde) {
+          const ipvaCom = truncar(precosAnuais[i] * 0.01);
+          const economia = truncar(ipvaSem - ipvaCom);
+          somaEco += economia;
+          tabelaHTML += `<tr><td>${anos[i]}</td><td>${ipvaSem.toFixed(2)}</td><td>${ipvaCom.toFixed(2)}</td><td>${economia.toFixed(2)}</td></tr>`;
+        } else {
+          tabelaHTML += `<tr><td>${anos[i]}</td><td>${ipvaSem.toFixed(2)}</td></tr>`;
+        }
+      }
+      tabelaHTML += '</table>';
+      if (habilitaBeneficioViaVerde) {
+        tabelaHTML += `<div class="economia">Economia total de IPVA (2026-2030): R$ ${somaEco.toFixed(2)} considerando benefício fiscal para HEV FLEX e PHEV FLEX.</div>`;
+      } else {
+        tabelaHTML += `<div class="economia">Benefício fiscal apenas para veículos com valor menor ou igual a R$ 300.000,00.<br>IPVA devido nos 5 anos: R$ ${(precosAnuais.reduce((ac,v)=>ac + ipvaBase(v),0)).toFixed(2)}</div>`;
+      }
+    }
+    // Mantém demais cenários padrões do script (BEV e demais tecnologias)
+    else if (tecnologia === 'BEV') {
+      if ((estado === 'SP' || estado === 'RO') && preco > 300000) {
+        tabelaHTML += '<table><tr><th>Ano</th><th>IPVA Devido (R$)</th></tr>';
+        let somaIpva = 0;
+        for (let i = 0; i < anos.length; i++) {
+          const ipva = ipvaBase(precosAnuais[i]);
+          somaIpva += ipva;
+          tabelaHTML += `<tr><td>${anos[i]}</td><td>${ipva.toFixed(2)}</td></tr>`;
+        }
+        tabelaHTML += '</table>';
+        tabelaHTML += `<div class="economia">Seu veículo não está isento de IPVA nesse estado pois excede R$ 300.000,00.<br>Total devido (2026-2030): R$ ${somaIpva.toFixed(2)}</div>`;
+      } else {
+        tabelaHTML += '<table><tr><th>Ano</th><th>Economia de IPVA (R$)</th></tr>';
+        for (let i = 0; i < anos.length; i++) {
+          const ipva = ipvaBase(precosAnuais[i]);
+          somaEconomia += ipva;
+          tabelaHTML += `<tr><td>${anos[i]}</td><td>${ipva.toFixed(2)}</td></tr>`;
+        }
+        tabelaHTML += '</table>';
+        if (estado === 'PB' || estado === 'RS') {
+          tabelaHTML += '<div class="economia">Que maravilha, seu estado já oferece isenção de IPVA para todos os veículos elétricos.<br>';
+        } else {
+          tabelaHTML += '<div class="economia">';
+        }
+        tabelaHTML += `Você economizará R$ ${somaEconomia.toFixed(2)} em IPVA no período de 2026 a 2030.</div>`;
+      }
+    }
+    else {
+      tabelaHTML += '<table><tr><th>Ano</th><th>IPVA Devido (R$)</th></tr>';
+      let somaIpva = 0;
+      for (let i = 0; i < anos.length; i++) {
+        const ipva = ipvaBase(precosAnuais[i]);
+        somaIpva += ipva;
+        tabelaHTML += `<tr><td>${anos[i]}</td><td>${ipva.toFixed(2)}</td></tr>`;
+      }
+      tabelaHTML += '</table>';
+      tabelaHTML += `<div class="economia">IPVA total devido (2026-2030): R$ ${somaIpva.toFixed(2)}</div>`;
+    }
+
+    document.getElementById('resultado').innerHTML = tabelaHTML;
+  }
+</script>
+</body>
+</html>
+<div class="obs-finais" style="margin-top:26px; padding:16px 14px; background:#f4f9f4; border-radius:8px; color:#224422; font-size:1em;">
+  <strong>Observações:</strong>
+  <ol style="margin:10px 0 0 20px; padding:0 0 0 10px;">
+    <li>Os veículos listados são os eletrificados mais vendidos de jan a jun de 2025.</li>
+    <li>A taxa média de desvalorização dos veículos aplicada foi de 20% no primeiro ano, 15% no segundo e 8% nos demais.</li>
+    <li>Os cálculos foram elaborados para os 4 estados focais do projeto: PB, RO, RS e SP.</li>
+  </ol>
+</div>
